@@ -10,7 +10,9 @@ class Payload(object):
     def __init__(self, data):
         self.data = data
 
-    def user_link(self, data=self.data['sender']):
+    def user_link(self, data=None):
+        if not data:
+            data = self.data['sender']
         name   = data['login']
         url    = data['html_url']
         avatar = data['avatar_url'] + "&s=18"
