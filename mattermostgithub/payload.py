@@ -234,3 +234,42 @@ class Wiki(Payload):
             msg.append(ctext)
         return "".join(msg)
 
+
+class Deployment(Payload):
+    def __init__(self, data):
+        Payload.__init__(self, data)
+
+    def deploy(self):
+        msg = "Deploying %s at  %s thanks to %s." % (self.data['ref'], self.repo_link(), self.user_link())
+        return msg
+
+
+class DeploymentStatus(Payload):
+    def __init__(self, data):
+        Payload.__init__(self, data)
+
+    def deployment_link(self):
+        name = self.data['deployment']['id']
+        url =  self.data['deployment']['url']
+        return '[#%s](%s)' % (name, url)
+    def success(self):
+        msg = "Deployment %s at  %s triggered by %s succeded \o/." % (
+                self.deployment_link(), self.repo_link(), self.user_link())
+        return msg
+
+    def pending(self):
+        msg = "Deployment %s at  %s triggered by %s is still pending." % (
+                self.deployment_link(), self.repo_link(), self.user_link())
+        return msg
+
+    def error(self):
+        msg = "Deployment %s at  %s triggered by %s errored:\n%s" % (
+                self.deployment_link(), self.repo_link(), self.user_link(),
+                self.data['deployment_status']['description'] or '')
+        return msg
+
+    def failed(self):
+        msg = "Deployment %s at  %s triggered by %s is failed like :shit::\n%s" % (
+                self.deployment_link(), self.repo_link(), self.user_link(),
+                self.data['deployment_status']['description'] or '')
+        return msg

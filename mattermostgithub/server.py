@@ -8,7 +8,8 @@ from flask import request
 from mattermostgithub import config
 from mattermostgithub.payload import (
     PullRequest, PullRequestComment, Issue, IssueComment,
-    Repository, Branch, Push, Tag, CommitComment, Wiki
+    Repository, Branch, Push, Tag, CommitComment, Wiki,
+    Deployment, DeploymentStatus
 )
 
 from mattermostgithub import app
@@ -80,6 +81,10 @@ def root():
             msg = CommitComment(data).created()
     elif event == "gollum":
         msg = Wiki(data).updated()
+    elif event == "deployment":
+        msg = Deployment(data).deploy()
+    elif event == "deployment_status":
+        msg = DeploymentStatus(data).status()
 
     if msg:
         hook_info = get_hook_info(data)
