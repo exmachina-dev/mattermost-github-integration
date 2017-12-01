@@ -1,3 +1,4 @@
+import os
 import json
 import hmac
 import hashlib
@@ -12,7 +13,8 @@ from mattermostgithub.payload import (
 
 from mattermostgithub import app
 
-SECRET = hmac.new(config.SECRET, digestmod=hashlib.sha1) if config.SECRET else None
+SECRET = hmac.new(config.SECRET.encode(), digestmod=hashlib.sha1) if config.SECRET else None
+ASSETS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @app.route(config.SERVER['hook'] or "/", methods=['POST'])
 def root():
@@ -130,8 +132,9 @@ def get_hook_info(data):
     return config.MATTERMOST_WEBHOOK_URLS['default']
 
 if __name__ == "__main__":
+    context = (config.SSL_CERT_FILE, config.SSL_KEY_FILE)
     app.run(
         host=config.SERVER['address'] or "0.0.0.0",
         port=config.SERVER['port'] or 5000,
-        debug=False
+        debug=False, ssl_context=context
     )
