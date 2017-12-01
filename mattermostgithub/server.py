@@ -85,13 +85,13 @@ def root():
         msg = Deployment(data).deploy()
     elif event == "deployment_status":
         if data['deployment_status']['state'] == "success":
-            msg = Organization(data).success()
+            msg = DeploymentStatus(data).success()
         elif data['deployment_status']['state'] == "pending":
-            msg = Organization(data).pending()
+            msg = DeploymentStatus(data).pending()
         elif data['deployment_status']['state'] == "error":
-            msg = Organization(data).error()
+            msg = DeploymentStatus(data).error()
         elif data['deployment_status']['state'] == "failure":
-            msg = Organization(data).failure()
+            msg = DeploymentStatus(data).failure()
     elif event == "organization":
         if data['action'] == "member_added":
             msg = Organization(data).member_added()
