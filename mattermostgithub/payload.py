@@ -246,7 +246,7 @@ class Deployment(Payload):
         Payload.__init__(self, data)
 
     def deploy(self):
-        msg = "Deploying %s at  %s thanks to %s." % (self.data['ref'], self.repo_link(), self.user_link())
+        msg = "Deploying %s at  %s thanks to %s." % (self.data['deployment']['ref'], self.repo_link(), self.user_link(self.data['deployment']['creator']))
         return msg
 
 
