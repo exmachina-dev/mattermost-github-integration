@@ -84,7 +84,14 @@ def root():
     elif event == "deployment":
         msg = Deployment(data).deploy()
     elif event == "deployment_status":
-        msg = DeploymentStatus(data).status()
+        if data['state'] == "success":
+            msg = Organization(data).success()
+        elif data['state'] == "pending":
+            msg = Organization(data).pending()
+        elif data['state'] == "error":
+            msg = Organization(data).error()
+        elif data['state'] == "failure":
+            msg = Organization(data).failure()
     elif event == "organization":
         if data['action'] == "member_added":
             msg = Organization(data).member_added()
