@@ -259,7 +259,7 @@ class DeploymentStatus(Payload):
         url =  self.data['deployment']['url']
         return '[#%s](%s)' % (name, url)
     def success(self):
-        msg = "Deployment %s at  %s triggered by %s succeded \o/." % (
+        msg = "Deployment %s at  %s triggered by %s succeded :metal:." % (
                 self.deployment_link(), self.repo_link(), self.user_link())
         return msg
 
