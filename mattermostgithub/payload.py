@@ -10,10 +10,10 @@ class Payload(object):
     def __init__(self, data):
         self.data = data
 
-    def user_link(self):
-        name   = self.data['sender']['login']
-        url    = self.data['sender']['html_url']
-        avatar = self.data['sender']['avatar_url'] + "&s=18"
+    def user_link(self, data=self.data['sender']):
+        name   = data['login']
+        url    = data['html_url']
+        avatar = data['avatar_url'] + "&s=18"
         return self.create_user_link(name, url, avatar)
 
     def check_avatar_size(self, url):
@@ -29,10 +29,14 @@ class Payload(object):
             return "![](%s) [%s](%s)" % (avatar, name, url)
         return "[%s](%s)" % (name, url)
 
-
     def repo_link(self):
         name = self.data['repository']['full_name']
         url  = self.data['repository']['html_url']
+        return "[%s](%s)" % (name, url)
+
+    def organization_link(self):
+        name = self.data['repository']['login']
+        url  = self.data['repository']['url']
         return "[%s](%s)" % (name, url)
 
     def preview(self, text):
@@ -272,4 +276,24 @@ class DeploymentStatus(Payload):
         msg = "Deployment %s at  %s triggered by %s is failed like :shit::\n%s" % (
                 self.deployment_link(), self.repo_link(), self.user_link(),
                 self.data['deployment_status']['description'] or '')
+        return msg
+
+
+class Organization(Payload):
+    def __init__(self, data):
+        Payload.__init__(self, data)
+
+    def member_added(self):
+        msg = '%s has been added to %s' % (
+                self.user_link(self.data['membership']['user']), self.organization_link())
+        return msg
+
+    def member_removed(self):
+        msg = '%s has been removed to %s' % (
+                self.user_link(self.data['membership']['user']), self.organization_link())
+        return msg
+
+    def member_invited(self):
+        msg = "%s has been invited to join %s." % (
+                self.data['invitation']['login'], self.organization_link())
         return msg

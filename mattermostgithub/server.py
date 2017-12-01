@@ -9,7 +9,7 @@ from mattermostgithub import config
 from mattermostgithub.payload import (
     PullRequest, PullRequestComment, Issue, IssueComment,
     Repository, Branch, Push, Tag, CommitComment, Wiki,
-    Deployment, DeploymentStatus
+    Deployment, DeploymentStatus, Organization
 )
 
 from mattermostgithub import app
@@ -85,6 +85,13 @@ def root():
         msg = Deployment(data).deploy()
     elif event == "deployment_status":
         msg = DeploymentStatus(data).status()
+    elif event == "organization":
+        if data['action'] == "member_added":
+            msg = Organization(data).member_added()
+        elif data['action'] == "member_removed":
+            msg = Organization(data).member_removed()
+        elif data['action'] == "member_invited":
+            msg = Organization(data).member_invited()
 
     if msg:
         hook_info = get_hook_info(data)
