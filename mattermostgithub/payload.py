@@ -39,6 +39,9 @@ class Payload(object):
     def organization_link(self):
         name = self.data['organization']['login']
         url  = self.data['organization']['url']
+        if SHOW_AVATARS and self.check_avatar_size(self.data['organization']['avatar_url']):
+            avatar = self.data['organization']['avatar_url']
+            return "![](%s) [%s](%s)" % (avatar, name, url)
         return "[%s](%s)" % (name, url)
 
     def preview(self, text):
