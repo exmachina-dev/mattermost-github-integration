@@ -37,8 +37,8 @@ class Payload(object):
         return "[%s](%s)" % (name, url)
 
     def organization_link(self):
-        name = self.data['repository']['login']
-        url  = self.data['repository']['url']
+        name = self.data['organization']['login']
+        url  = self.data['organization']['url']
         return "[%s](%s)" % (name, url)
 
     def preview(self, text):
