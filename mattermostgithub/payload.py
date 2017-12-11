@@ -208,7 +208,7 @@ class Push(Payload):
             url = 'https://github.com/' + data['username']
             avatar = url + '.png'
             if SHOW_AVATARS:
-                return "![](%s =20) [%s](%s)" % (avatar, name, url)
+                return "![](%s =18) [%s](%s)" % (avatar, name, url)
             return "[%s](%s)" % (name, url)
         else:
             return name
