@@ -202,6 +202,15 @@ class Push(Payload):
     def __init__(self, data):
         Payload.__init__(self, data)
 
+    def author_link(self, data):
+        name   = data['name']
+        if data['username']:
+            url = 'https://github.com/' + data['username']
+            avatar = url + '.png&s=18'
+            return self.create_user_link(name, url, avatar)
+        else:
+            return name
+
     def commits(self):
         commits = self.data['commits']
         branch = self.data['ref'].replace("refs/heads/", "")
@@ -215,7 +224,7 @@ class Push(Payload):
             cid  = commit['id'][:7]
             curl = commit['url']
             cmsg = self.preview(commit['message'])
-            ctext = "- [`%s`](%s) by %s: %s" % (cid, curl, self.user_link(commit['author']), cmsg)
+            ctext = "- [`%s`](%s) by %s: %s" % (cid, curl, self.author_link(commit['author']), cmsg)
             msg.append("\n")
             msg.append(ctext)
         return "".join(msg)
