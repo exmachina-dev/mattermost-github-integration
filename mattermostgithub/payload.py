@@ -206,7 +206,7 @@ class Push(Payload):
         name   = data['name']
         if data['username']:
             url = 'https://github.com/' + data['username']
-            avatar = url + '.png&s=18'
+            avatar = url + '.png?s=18'
             return self.create_user_link(name, url, avatar)
         else:
             return name
