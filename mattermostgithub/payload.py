@@ -215,7 +215,7 @@ class Push(Payload):
             cid  = commit['id'][:7]
             curl = commit['url']
             cmsg = self.preview(commit['message'])
-            ctext = "- [`%s`](%s) by %s: %s" % (cid, curl, self.user_link(commit['author'], cmsg)
+            ctext = "- [`%s`](%s) by %s: %s" % (cid, curl, self.user_link(commit['author']), cmsg)
             msg.append("\n")
             msg.append(ctext)
         return "".join(msg)
