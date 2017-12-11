@@ -204,7 +204,7 @@ class Push(Payload):
 
     def author_link(self, data):
         name   = data['name']
-        if data['username']:
+        if data.get('username', False):
             url = 'https://github.com/' + data['username']
             avatar = url + '.png'
             if SHOW_AVATARS:
