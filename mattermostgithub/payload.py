@@ -44,16 +44,33 @@ class Payload(object):
             return "![](%s) [%s](%s)" % (avatar, name, url)
         return "[%s](%s)" % (name, url)
 
-    def preview(self, text):
+    def preview(self, text, sep='\n', max_len=500, suffix=' [...]'):
         if not text:
             return text
-        l = text.split("\n")
-        result = l[0]
-        if result[-1] in "[\n, \r]":
-            result = result[:-1]
-        if result != text:
-            result += " [...]"
-        return result
+
+
+        lines = text.splitlines()
+        if len(lines) <= 1:
+            return text
+
+        text_len = 0
+        sep_len = len(sep)
+        suffix_len = len(suffix)
+        result = []
+        for l in lines:
+            if text_len + len(l) < (max_len - suffix_len):
+                result.append(l)
+                text_len += len(l) + sep_len
+            else:
+                l_len = max_len - text_len - suffix_len
+                if l_len <= 0:
+                    result.append(suffix)
+                else:
+                    result.append(l[:l_len] + suffix)
+                break
+
+        return sep.join(result)
+
 
 class PullRequest(Payload):
     def __init__(self, data):
@@ -114,10 +131,12 @@ class Issue(Payload):
         self.body   = self.data['issue']['body']
 
     def opened(self):
-        body = self.preview(self.body)
-        msg = """%s opened new issue [#%s %s](%s) in %s:
-> %s""" % (self.user_link(), self.number, self.title, self.url, self.repo_link(), body)
-        return msg
+        body = '> ' + self.preview(self.body, sep='\n> ')
+        msg = []
+        msg.append("%s opened new issue [#%s %s](%s) in %s:" % (
+                   self.user_link(), self.number, self.title,
+                   self.url, self.repo_link()))
+        return '\n'.join(msg)
 
     def labeled(self):
         label = self.data['label']['name']
@@ -145,10 +164,11 @@ class IssueComment(Payload):
         self.body   = self.data['comment']['body']
 
     def created(self):
-        body = self.preview(self.body)
-        msg = """%s commented on [#%s %s](%s):
-> %s""" % (self.user_link(), self.number, self.title, self.url, body)
-        return msg
+        body = '> ' + self.preview(self.body, sep='\n> ')
+        msg = []
+        msg.append("%s commented on [#%s %s](%s):" % (self.user_link(), self.number, self.title, self.url))
+        msg.append(body)
+        return '\n'.join(msg)
 
 class CommitComment(Payload):
     def __init__(self, data):
