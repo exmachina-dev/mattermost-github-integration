@@ -81,7 +81,7 @@ class PullRequest(Payload):
         self.url    = self.data['pull_request']['html_url']
 
     def opened(self):
-        body = self.preview(self.body)
+        body = self.preview(self.body, sep='\n> ')
         msg = """%s opened new pull request [#%s %s](%s) in %s:
 > %s""" % (self.user_link(), self.number, self.title,
             self.url, self.repo_link(), body)
@@ -117,7 +117,7 @@ class PullRequestComment(Payload):
         self.url    = self.data['comment']['html_url']
 
     def created(self):
-        body = self.preview(self.body)
+        body = self.preview(self.body, sep='\n> ')
         msg = """%s commented on pull request [#%s %s](%s):
 > %s""" % (self.user_link(), self.number, self.title, self.url, body)
         return msg
@@ -178,7 +178,7 @@ class CommitComment(Payload):
         self.body   = self.data['comment']['body']
 
     def created(self):
-        body = self.preview(self.body)
+        body = self.preview(self.body, sep='\n> ')
         msg = """%s commented on [%s](%s):
 > %s""" % (self.user_link(), self.cid, self.url, body)
         return msg
